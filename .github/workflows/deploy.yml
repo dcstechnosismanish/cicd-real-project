@@ -58,7 +58,7 @@ jobs:
 
       - name: Check Container Health
         run: |
-          docke compose ps 
+          docker compose ps 
 
       - name: Verify Application
         run: |
