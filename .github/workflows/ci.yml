@@ -5,7 +5,7 @@ on:
     branches:
       - master
 
-  pull_requst:
+  pull_request:
     branches:
       - master
 
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.jobs
+      - name: Setup Node.js 
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -27,6 +27,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci 
 
-      - name: Build Docker Images
+      - name: Build Docker Image
         run: docker build -t cicd-real-app:${{ github.sha }} .
         
