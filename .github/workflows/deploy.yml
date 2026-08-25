@@ -1,4 +1,4 @@
-name: CI-CD Pipeline 
+name: CI-CD Pipeline
 
 on:
   push:
@@ -10,11 +10,12 @@ on:
       - master
 
 jobs:
+
   # ==================
   # CI JOB
   # ==================
   ci:
-    name: Continous Intergration
+    name: Continuous Integration
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +23,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -30,16 +31,17 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build docker Image
-        run: |
-          docker build -t cicid-real-app:${{ github.sha }} .
+      - name: Run Tests
+        run: npm test
 
+      - name: Build Docker Image
+        run: docker build -t cicd-real-app:${{ github.sha }} .
 
-  # ============================
+  # ==================
   # CD JOB
-  # ============================
+  # ==================
   cd:
-    name:  Continuous Deployment
+    name: Continuous Deployment
     needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: self-hosted
@@ -48,9 +50,9 @@ jobs:
 
       - name: Deploy Application
         run: |
-          cd ~/cicd-real-project 
+          cd ~/cicd-real-project
           git pull origin master
-          docker compose up -d --build  
+          docker compose up -d --build
 
       - name: Wait for Application
         run: |
@@ -58,8 +60,8 @@ jobs:
 
       - name: Check Container Health
         run: |
-          docker compose ps 
+          docker compose ps
 
       - name: Verify Application
         run: |
-          curl -f http://127.0.o.1:3000
+          curl -f http://127.0.0.1:3000/health
