@@ -1,0 +1,65 @@
+name: CI-CD Pipeline 
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # ==================
+  # CI JOB
+  # ==================
+  ci:
+    name: Continous Intergration
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm Install
+
+      - name: Build docker Image
+        run: |
+          docker build -t cicid-real-app:${{ github.sha }} .
+
+
+  # ============================
+  # CD JOB
+  # ============================
+  cd:
+    name:  Continuous Deployment
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+
+    steps:
+
+      - name: Deploy Application
+        run: |
+          cd ~/cicd-real-project 
+          git pull origin master
+          docker compose up -d --build  
+
+      - name: Wait for Application
+        run: |
+          sleep 10
+
+      - name: Check Container Health
+        run: |
+          docke compose ps 
+
+      - name: Verify Application
+        run: |
+          curl -f http://127.0.o.1:3000
