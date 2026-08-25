@@ -9,7 +9,7 @@ const server = http.createServer((req, res) => {
 
     res.end(JSON.stringify({
         message: "Hello from CI/CD Pipeline 🚀",
-        version: "v1"
+        version: "v2"
     }));
 });
 
