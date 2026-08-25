@@ -28,7 +28,7 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
-        run: npm Install
+        run: npm install
 
       - name: Build docker Image
         run: |
